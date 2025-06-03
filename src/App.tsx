@@ -1,10 +1,11 @@
 import { framer, ImageAsset } from "framer-plugin"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import "./App.css"
 import { useDynamicPluginHeight } from "./useDynamicPluginHeight"
 
 export function App() {
     const image = useImage()
+    const imgRef = useRef<HTMLImageElement>(null)
 
     const [flipH, setFlipH] = useState(false)
     const [flipV, setFlipV] = useState(false)
@@ -16,11 +17,30 @@ export function App() {
         maxHeight: 500,
     })
 
+    const [imageDimensions, setImageDimensions] = useState<{ width: number; height: number } | null>(null)
+
+    // Calculate the image size by checking the img element directly
+    useEffect(() => {
+        if (image && image.url && imgRef.current) {
+            const img = imgRef.current
+            if (img.complete) {
+                setImageDimensions({ width: img.naturalWidth, height: img.naturalHeight })
+            } else {
+                img.onload = () => {
+                    setImageDimensions({ width: img.naturalWidth, height: img.naturalHeight })
+                }
+            }
+        } else {
+            setImageDimensions(null)
+        }
+    }, [image])
+
     return (
         <main className="flex-col gap-2 w-full max-h-[500px] select-none overflow-hidden px-3 pb-3">
             {image ? (
                 <div className="w-full bg-tertiary dark:bg-secondary rounded flex center relative overflow-hidden">
                     <img
+                        ref={imgRef}
                         src={`${image.url}?scale-down-to=512`}
                         alt={image.altText}
                         className="size-full object-contain relative rounded-[inherit] max-h-[400px]"
