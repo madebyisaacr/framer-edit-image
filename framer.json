@@ -1,8 +1,6 @@
 {
-  "id": "1a8a47",
-  "name": "Edit Image",
-  "modes": [
-    "canvas"
-  ],
-  "icon": "/icon.svg"
+    "id": "1a8a47",
+    "name": "Edit Image",
+    "modes": ["canvas", "editImage"],
+    "icon": "/icon.svg"
 }
